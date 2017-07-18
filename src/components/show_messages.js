@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import React, {Component} from 'react';
 import sentiment from 'sentiment';
 import {Chart} from 'react-google-charts';
@@ -23,7 +22,7 @@ export default class ShowMessages extends Component {
 
         this.state = {
             rows: [
-                [new Date(), 0],
+                [new Date(), 0, 'This is the beginning of the end'],
             ],
             columns: [
                 {
@@ -33,6 +32,10 @@ export default class ShowMessages extends Component {
                 {
                     type: 'number',
                     label: 'Sentiment',
+                },
+                {
+                    type: 'string',
+                    role: 'tooltip',
                 },
             ],
             options: {
@@ -58,16 +61,24 @@ export default class ShowMessages extends Component {
                     }
                 },
                 vAxis: {title: 'Sentiment', minValue: -10, maxValue: 10},
+                tooltip: {isHtml: true},
                 legend: 'none',
             },
         };
+    }
 
-        // this.rows = [
-        //     [new Date(), 0],
-        // ];
+    getMessageText = (message) => {
+        let text = message.text;
+        if (message.previousMessage) text = message.message.text;
 
-        // https://medium.com/@justintulk/best-practices-for-resetting-an-es6-react-components-state-81c0c86df98d
-        this.baseState = _.pickBy(this.state, (propName) => propName !== "messages");
+        return text;
+    }
+
+    buildTooltip = (message) => {
+        // Refer to https://developers.google.com/chart/interactive/docs/customizing_tooltip_content
+        let text = this.getMessageText(message);
+
+        return text;
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -78,8 +89,7 @@ export default class ShowMessages extends Component {
 
         if (prevProps.message.ts !== this.props.message.ts) {
             const {message} = this.props;
-            let text = message.text;
-            if (message.previousMessage) text = message.message.text;
+            let text = this.getMessageText(message);
 
             // let sentimentResult = sentiment(text);
             // console.log(text);
@@ -89,7 +99,8 @@ export default class ShowMessages extends Component {
 
             const {score} = sentiment(text);
             let date = new Date();
-            let newRow = [date, score];
+            let tooltip = this.buildTooltip(message);
+            let newRow = [date, score, tooltip];
 
             console.log(newRow);
 
@@ -97,57 +108,6 @@ export default class ShowMessages extends Component {
             this.setState({rows: [...this.state.rows, newRow]});
             console.log(this.state.rows);
         }
-
-        // // this.setState(this.baseState);
-        // // console.log('after base state: this.state.messages.length', this.state.messages.length);
-        //
-        // _.map(this.state.messages, message => {
-        //     let text = message.text;
-        //     if (message.previousMessage) text = message.message.text;
-        //
-        //     let sentimentResult = sentiment(text);
-        //     console.log(text);
-        //     console.group();
-        //     console.log(sentimentResult);
-        //     console.groupEnd();
-        //
-        //     const {score} = sentiment(text);
-        //     let date = new Date();
-        //     let newRow = [date, score];
-        //
-        //     console.log(newRow);
-        //
-        //     this.setState({rows: [...this.state.rows, newRow]});
-        // });
-        //
-        // // only update chart if the data has changed
-        // if (prevProps.data !== this.props.data) {
-        //     // this.chart = c3.load({
-        //     //     data: this.props.data
-        //     // });
-        //
-        //
-        // }
-    }
-
-    getMessageJSX = ({messages}) => {
-        console.log('ShowMessages.messages', messages);
-        if (_.isEmpty(messages)) return <div>Loading...</div>;
-
-        let messageJSX = _.map(messages, message => {
-            let text = message.text;
-            if (message.previousMessage) text = message.message.text;
-
-            let sentimentResult = sentiment(text);
-            console.log(text);
-            console.group();
-            console.log(sentimentResult);
-            console.groupEnd();
-
-            return <li key={message.ts}>{text}</li>;
-        });
-
-        return messageJSX;
     }
 
     render() {
