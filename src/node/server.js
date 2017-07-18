@@ -21,13 +21,13 @@ bot.started(function(payload) {
 // start listening to the slack team associated to the token
 bot.listen({token:token});
 
-bot.message((msg) => {
-    io.on('connection', function(socket){
-        socket.on('disconnect', function(){
-            console.log('user disconnected');
-        });
+io.on('connection', function(socket){
+    socket.on('disconnect', function(){
+        console.log('user disconnected');
     });
+});
 
+bot.message((msg) => {
     console.log('message.channels', msg);
     io.emit('chat message', msg);
 });
