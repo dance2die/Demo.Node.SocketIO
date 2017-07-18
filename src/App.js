@@ -39,7 +39,11 @@ const ShowMessages = ({messages}) => {
     if (_.isEmpty(messages)) return <div>loading...</div>;
 
     let messageJSX = _.map(messages, message => {
-        return <li key={message.ts}>{message.text}</li>;
+        if (message.subtype === "message_changed"){
+            return <li key={message.ts}>{message.message.text}</li>;
+        } else {
+            return <li key={message.ts}>{message.text}</li>;
+        }
     });
 
     return <div>{messageJSX}</div>;
