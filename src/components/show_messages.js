@@ -19,12 +19,12 @@ export default class ShowMessages extends Component {
 
         let today = new Date();
         let maxTime = new Date();
-        maxTime.setMinutes(today.getMinutes() + 10);
+        maxTime.setMinutes(today.getMinutes() + 3);
 
         this.state = {
-            // rows: [
-            //     [new Date(1789, 4, 30), 0]
-            // ],
+            rows: [
+                [new Date(), 0],
+            ],
             columns: [
                 {
                     type: 'datetime',
@@ -62,9 +62,9 @@ export default class ShowMessages extends Component {
             },
         };
 
-        this.rows = [
-            [new Date(), 0],
-        ];
+        // this.rows = [
+        //     [new Date(), 0],
+        // ];
 
         // https://medium.com/@justintulk/best-practices-for-resetting-an-es6-react-components-state-81c0c86df98d
         this.baseState = _.pickBy(this.state, (propName) => propName !== "messages");
@@ -76,25 +76,27 @@ export default class ShowMessages extends Component {
         console.log(prevProps);
         console.log(this.props);
 
-        const {message} = this.props;
-        let text = message.text;
-        if (message.previousMessage) text = message.message.text;
+        if (prevProps.message.ts !== this.props.message.ts) {
+            const {message} = this.props;
+            let text = message.text;
+            if (message.previousMessage) text = message.message.text;
 
-        let sentimentResult = sentiment(text);
-        console.log(text);
-        console.group();
-        console.log(sentimentResult);
-        console.groupEnd();
+            // let sentimentResult = sentiment(text);
+            // console.log(text);
+            // console.group();
+            // console.log(sentimentResult);
+            // console.groupEnd();
 
-        const {score} = sentiment(text);
-        let date = new Date();
-        let newRow = [date, score];
+            const {score} = sentiment(text);
+            let date = new Date();
+            let newRow = [date, score];
 
-        console.log(newRow);
+            console.log(newRow);
 
-        // this.setState({rows: [...this.state.rows, newRow]});
-        this.rows = [...this.rows, newRow];
-        console.log(this.rows);
+            // this.setState({rows: [...this.state.rows, newRow]});
+            this.setState({rows: [...this.state.rows, newRow]});
+            console.log(this.state.rows);
+        }
 
         // // this.setState(this.baseState);
         // // console.log('after base state: this.state.messages.length', this.state.messages.length);
@@ -153,7 +155,7 @@ export default class ShowMessages extends Component {
         return (
             <Chart
                 chartType="LineChart"
-                rows={this.rows}
+                rows={this.state.rows}
                 columns={this.state.columns}
                 options={this.state.options}
                 graph_id="ScatterChart"
