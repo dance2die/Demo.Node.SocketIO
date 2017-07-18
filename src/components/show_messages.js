@@ -18,6 +18,7 @@ export default class ShowMessages extends Component {
         ];
 
         this.state = {
+            messages: [],
             rows: [
                 [new Date(1789, 4, 30), 0]
             ],
@@ -40,7 +41,7 @@ export default class ShowMessages extends Component {
         };
 
         // https://medium.com/@justintulk/best-practices-for-resetting-an-es6-react-components-state-81c0c86df98d
-        this.baseState = this.state;
+        this.baseState = _.pickBy(this.state, (propName) => propName !== "messages");
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -49,12 +50,13 @@ export default class ShowMessages extends Component {
         console.log(prevProps);
         console.log(this.props);
 
-        const {messages} = this.props;
+        const {message} = this.props;
+        this.setState({messages: [...this.state.messages, message]});
 
-        console.log('messages', messages);
         this.setState(this.baseState);
+        console.log('after base state: this.state.messages.length', this.state.messages.length);
 
-        _.map(messages, message => {
+        _.map(this.state.messages, message => {
             let text = message.text;
             if (message.previousMessage) text = message.message.text;
 
@@ -72,15 +74,15 @@ export default class ShowMessages extends Component {
 
             this.setState({rows: [...this.state.rows, newRow]});
         });
-
-        // only update chart if the data has changed
-        if (prevProps.data !== this.props.data) {
-            // this.chart = c3.load({
-            //     data: this.props.data
-            // });
-
-
-        }
+        //
+        // // only update chart if the data has changed
+        // if (prevProps.data !== this.props.data) {
+        //     // this.chart = c3.load({
+        //     //     data: this.props.data
+        //     // });
+        //
+        //
+        // }
     }
 
     getMessageJSX = ({messages}) => {

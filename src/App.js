@@ -7,13 +7,14 @@ import ShowMessages from './components/show_messages';
 let socket = io('http://localhost:3001');
 
 class App extends Component {
-    state = {messages: []};
+    state = {message: {}};
 
     componentDidMount() {
         socket.on('chat message', (message) => {
             console.log(message.text);
             console.log('this.state.messages', this.state.messages);
-            this.setState({messages: [...this.state.messages, message]});
+            // this.setState({messages: [...this.state.messages, message]});
+            this.setState({message});
         });
     }
 
@@ -26,7 +27,7 @@ class App extends Component {
                 </div>
                 <div className="App-intro">
                     <ul>
-                        <ShowMessages messages={this.state.messages}/>
+                        <ShowMessages message={this.state.message} />
                     </ul>
                 </div>
             </div>
