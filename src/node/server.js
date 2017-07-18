@@ -32,9 +32,9 @@ bot.message((msg) => {
     io.emit('chat message', msg);
 });
 
-app.get('/', function(req, res){
-    res.sendFile(__dirname + '/index.html');
-});
+// app.get('/', function(req, res){
+//     res.sendFile(__dirname + '/index.html');
+// });
 
 // io.on('connection', function(socket){
 //     socket.on('disconnect', function(){
@@ -53,8 +53,9 @@ app.get('/', function(req, res){
 //     // });
 // });
 
-http.listen(3000, function(){
-    console.log('listening on *:3000');
+const port = 3001;
+http.listen(3001, function(){
+    console.log(`listening on *:{3001}`);
 });
 
 
