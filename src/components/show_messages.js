@@ -1,8 +1,88 @@
 import _ from 'lodash';
 import React, {Component} from 'react';
 import sentiment from 'sentiment';
+import {Chart} from 'react-google-charts';
 
 export default class ShowMessages extends Component {
+    constructor(props) {
+        super(props);
+
+        this.chartEvents = [
+            {
+                eventName: 'select',
+                callback(Chart) {
+                    // Returns Chart so you can access props and  the ChartWrapper object from chart.wrapper
+                    console.log('Selected ', Chart.chart.getSelection());
+                },
+            },
+        ];
+
+        this.state = {
+            rows: [
+                [new Date(1789, 4, 30), 0]
+            ],
+            columns: [
+                {
+                    type: 'date',
+                    label: 'Time',
+                },
+                {
+                    type: 'number',
+                    label: 'Sentiment',
+                },
+            ],
+            options: {
+                title: 'Sentiment vs Time',
+                hAxis: {title: 'Time'},
+                vAxis: {title: 'Sentiment', minValue: -100, maxValue: 100},
+                legend: 'none',
+            },
+        };
+
+        // https://medium.com/@justintulk/best-practices-for-resetting-an-es6-react-components-state-81c0c86df98d
+        this.baseState = this.state;
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        console.log('ShowMessages:componentDidUpdate');
+
+        console.log(prevProps);
+        console.log(this.props);
+
+        const {messages} = this.props;
+
+        console.log('messages', messages);
+        this.setState(this.baseState);
+
+        _.map(messages, message => {
+            let text = message.text;
+            if (message.previousMessage) text = message.message.text;
+
+            let sentimentResult = sentiment(text);
+            console.log(text);
+            console.group();
+            console.log(sentimentResult);
+            console.groupEnd();
+
+            const {score} = sentiment(text);
+            let date = new Date();
+            let newRow = [date, score];
+
+            console.log(newRow);
+
+            this.setState({rows: [...this.state.rows, newRow]});
+        });
+
+        // only update chart if the data has changed
+        if (prevProps.data !== this.props.data) {
+            // this.chart = c3.load({
+            //     data: this.props.data
+            // });
+
+
+        }
+    }
+
     getMessageJSX = ({messages}) => {
         console.log('ShowMessages.messages', messages);
         if (_.isEmpty(messages)) return <div>Loading...</div>;
@@ -24,6 +104,18 @@ export default class ShowMessages extends Component {
     }
 
     render() {
-        return <div>{this.getMessageJSX(this.props)}</div>;
+        // return <div>{this.getMessageJSX(this.props)}</div>;
+        return (
+            <Chart
+                chartType="LineChart"
+                rows={this.state.rows}
+                columns={this.state.columns}
+                options={this.state.options}
+                graph_id="ScatterChart"
+                width="100%"
+                height="400px"
+                chartEvents={this.chartEvents}
+            />
+        );
     }
 }
