@@ -19,7 +19,7 @@ io.on('connection', function(socket){
 });
 
 // do something with the rtm.start payload
-bot.started(function(payload) {
+bot.started((payload) => {
     console.log('payload from rtm.start', payload);
     // console.log("bot started successfully!!!");
     io.emit('initial payload', payload);

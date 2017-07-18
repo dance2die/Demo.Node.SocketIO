@@ -62,7 +62,17 @@ export default class ShowMessages extends Component {
                         }
                     }
                 },
-                vAxis: {title: 'Sentiment', minValue: -10, maxValue: 10},
+                vAxis: {
+                    title: 'Sentiment',
+                    minValue: -10,
+                    maxValue: 10,
+                    gridlines: {
+                        count: 1,
+                    },
+                    minorGridlines: {
+                        count: -1,
+                    }
+                },
                 tooltip: {isHtml: true},
                 legend: 'none',
             },
