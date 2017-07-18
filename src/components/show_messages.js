@@ -3,6 +3,8 @@ import sentiment from 'sentiment';
 import {Chart} from 'react-google-charts';
 
 export default class ShowMessages extends Component {
+    maxMessages = 10;
+
     constructor(props) {
         super(props);
 
@@ -67,6 +69,18 @@ export default class ShowMessages extends Component {
         };
     }
 
+    setChartMaxDate = (date) => {
+        this.setState({
+            options: {
+                hAxis: {
+                    viewWindow: {
+                        max: date
+                    }
+                }
+            }
+        });
+    }
+
     getMessageText = (message) => {
         let text = message.text;
         if (message.previousMessage) text = message.message.text;
@@ -90,21 +104,20 @@ export default class ShowMessages extends Component {
         if (prevProps.message.ts !== this.props.message.ts) {
             const {message} = this.props;
             let text = this.getMessageText(message);
-
-            // let sentimentResult = sentiment(text);
-            // console.log(text);
-            // console.group();
-            // console.log(sentimentResult);
-            // console.groupEnd();
-
             const {score} = sentiment(text);
             let date = new Date();
             let tooltip = this.buildTooltip(message);
-            let newRow = [date, score, tooltip];
 
+            let newRow = [date, score, tooltip];
             console.log(newRow);
+            this.setChartMaxDate(date);
 
             // this.setState({rows: [...this.state.rows, newRow]});
+            // let rows = this.state.rows;
+            if (this.state.rows.length > this.maxMessages) {
+                console.log("***dequeing an element from rows");
+                this.state.rows.shift();
+            }
             this.setState({rows: [...this.state.rows, newRow]});
             console.log(this.state.rows);
         }

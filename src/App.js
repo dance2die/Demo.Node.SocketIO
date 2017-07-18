@@ -7,7 +7,11 @@ import ShowMessages from './components/show_messages';
 let socket = io('http://localhost:3001');
 
 class App extends Component {
-    state = {message: {}};
+    state = {
+        message: {},
+        channels: [],
+        users: [],
+    };
 
     componentDidMount() {
         socket.on('chat message', (message) => {
@@ -15,6 +19,10 @@ class App extends Component {
             console.log('this.state.messages', this.state.messages);
             // this.setState({messages: [...this.state.messages, message]});
             this.setState({message});
+        });
+
+        socket.on('initial payload', (payload) => {
+           console.log(payload);
         });
     }
 
