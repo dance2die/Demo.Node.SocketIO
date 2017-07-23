@@ -6,6 +6,10 @@ import ShowMessages from './components/show_messages';
 
 let socket = io('http://localhost:3001');
 
+const IO_EVENT_INITIAL_PAYLOAD = 'initial payload';
+const IO_EVENT_CHAT_MESSAGE = 'chat message';
+
+
 class App extends Component {
     state = {
         message: {},
@@ -14,15 +18,12 @@ class App extends Component {
     };
 
     componentDidMount() {
-        socket.on('chat message', (message) => {
-            console.log(message.text);
-            console.log('this.state.messages', this.state.messages);
-            // this.setState({messages: [...this.state.messages, message]});
+        socket.on(IO_EVENT_CHAT_MESSAGE, (message) => {
             this.setState({message});
         });
 
-        socket.on('initial payload', (payload) => {
-           console.log(payload);
+        socket.on(IO_EVENT_INITIAL_PAYLOAD, (payload) => {
+           console.log(`${IO_EVENT_INITIAL_PAYLOAD}`, payload);
         });
     }
 

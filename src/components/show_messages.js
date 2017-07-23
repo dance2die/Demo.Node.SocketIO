@@ -106,10 +106,7 @@ export default class ShowMessages extends Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        console.log('ShowMessages:componentDidUpdate');
-
-        console.log(prevProps);
-        console.log(this.props);
+        // console.log('ShowMessages:componentDidUpdate');
 
         if (prevProps.message.ts !== this.props.message.ts) {
             const {message} = this.props;
@@ -119,7 +116,7 @@ export default class ShowMessages extends Component {
             let tooltip = this.buildTooltip(message);
 
             let newRow = [date, score, tooltip];
-            console.log(newRow);
+            console.log('newRow', newRow);
             this.setChartMaxDate(date);
 
             // this.setState({rows: [...this.state.rows, newRow]});
@@ -129,7 +126,7 @@ export default class ShowMessages extends Component {
                 this.state.rows.shift();
             }
             this.setState({rows: [...this.state.rows, newRow]});
-            console.log(this.state.rows);
+            // console.log(this.state.rows);
         }
     }
 
