@@ -17,20 +17,21 @@ const IO_EVENT_CHAT_MESSAGE = 'chat message';
 // logs: ws, started, close, listen, etc... in addition to the RTM event handler methods
 // console.log(Object.keys(bot));
 
-io.on('connection', function(socket){
-    socket.on('disconnect', function(){
-        console.log('user disconnected');
-    });
-});
+// io.on('connection', function(socket){
+//     socket.on('disconnect', function(){
+//         console.log('user disconnected');
+//     });
+// });
 
 
 let initialPayload = {};
 // do something with the rtm.start payload
 bot.started((payload) => {
     // console.log('payload from rtm.start', payload);
+
     initialPayload = payload;
     // console.log("bot started successfully!!!");
-    // io.emit('initial payload', payload);
+    io.emit(IO_EVENT_INITIAL_PAYLOAD, payload);
 });
 
 // start listening to the slack team associated to the token
