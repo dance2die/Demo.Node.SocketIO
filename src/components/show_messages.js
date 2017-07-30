@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import sentiment from 'sentiment';
 import {Chart} from 'react-google-charts';
+import _ from 'lodash';
 
 export default class ShowMessages extends Component {
     maxMessages = 10;
@@ -98,9 +99,19 @@ export default class ShowMessages extends Component {
         return text;
     }
 
-    buildTooltip = (message) => {
+    buildTooltip = (messageContext) => {
+        let user = _.find(messageContext.users, {'id': messageContext.message.user});
+        console.log('buildTooltip.user', user);
+
+        // Get Channel name
+        let {name_normalized: channelName} = _.find(messageContext.channels, {'id': messageContext.message.channel});
+
+        // Get name (ID), real name & imageURL
+        let {name, real_name, profile: {image_32: imageURL}} = user;
+        console.log('buildTooltip: channelName, name, real_name, imageURL', channelName, name, real_name, imageURL);
+
         // Refer to https://developers.google.com/chart/interactive/docs/customizing_tooltip_content
-        let text = this.getMessageText(message);
+        let text = this.getMessageText(messageContext);
 
         return text;
     }
@@ -108,14 +119,17 @@ export default class ShowMessages extends Component {
     componentDidUpdate(prevProps, prevState) {
         // console.log('ShowMessages:componentDidUpdate');
 
-        if (prevProps.message.ts !== this.props.message.ts) {
-            const {message} = this.props;
+        console.log('prevProps & this.props', prevProps, this.props);
+
+        // if (prevProps.messageContext.message.ts !== this.props.messageContext.message.ts) {
+        if (this.props.messageContext.message && prevProps.messageContext.message !== this.props.messageContext.message) {
+            const {message} = this.props.messageContext;
             console.log('message', message);
 
             let text = this.getMessageText(message);
             const {score} = sentiment(text);
             let date = new Date();
-            let tooltip = this.buildTooltip(message);
+            let tooltip = this.buildTooltip(this.props.messageContext);
 
             let newRow = [date, score, tooltip];
             console.log('newRow', newRow);

@@ -14,14 +14,16 @@ const IO_EVENT_CHAT_MESSAGE = 'chat message';
 
 class App extends Component {
     state = {
-        message: {},
-        channels: [],
-        users: [],
+        messageContext: {
+            message: {},
+            channels: [],
+            users: [],
+        }
     };
 
     componentDidMount() {
         socket.on(IO_EVENT_CHAT_MESSAGE, (message) => {
-            this.setState({message});
+            this.setState({messageContext: {...this.state.messageContext, message}});
         });
 
         socket.on(IO_EVENT_INITIAL_PAYLOAD, (payload) => {
@@ -43,7 +45,14 @@ class App extends Component {
         var mappedChannelsState = _.map(channels, _.partialRight(_.pick, ['id', 'name_normalized']));
         console.log('mappedChannelsState & mappedUsersState', mappedChannelsState, mappedUsersState);
 
-        this.setState({channels: channelsState, users: usersState});
+        // this.setState({channels: mappedChannelsState, users: mappedUsersState});
+
+        this.setState({
+            messageContext: {
+                channels: mappedChannelsState,
+                users: mappedUsersState
+            }
+        });
     }
 
     extractUsersState = (users) => {
@@ -63,7 +72,7 @@ class App extends Component {
                 </div>
                 <div className="App-intro">
                     <ul>
-                        <ShowMessages message={this.state.message} />
+                        <ShowMessages messageContext={this.state.messageContext} />
                     </ul>
                 </div>
             </div>
