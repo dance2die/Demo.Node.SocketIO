@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import sentiment from 'sentiment';
 import {Chart} from 'react-google-charts';
 import _ from 'lodash';
+// import ReactDOM from 'react-dom';
+import ReactDOMServer from 'react-dom/server';
 
 export default class ShowMessages extends Component {
     maxMessages = 10;
@@ -39,11 +41,15 @@ export default class ShowMessages extends Component {
                 {
                     type: 'string',
                     role: 'tooltip',
+                    'p': {'html': true}
                 },
             ],
             options: {
                 title: 'Sentiment vs Time',
+                randomProperty: "xxxxx",
+                tooltip: {isHtml: true},
                 hAxis: {
+                    legend: 'none',
                     title: 'Time',
                     viewWindow: {
                         min: today,
@@ -74,8 +80,6 @@ export default class ShowMessages extends Component {
                         count: -1,
                     }
                 },
-                tooltip: {isHtml: true},
-                legend: 'none',
             },
         };
     }
@@ -83,6 +87,7 @@ export default class ShowMessages extends Component {
     setChartMaxDate = (date) => {
         this.setState({
             options: {
+                ...this.state.options,
                 hAxis: {
                     viewWindow: {
                         max: date
@@ -102,6 +107,7 @@ export default class ShowMessages extends Component {
     buildTooltip = (messageContext) => {
         let user = _.find(messageContext.users, {'id': messageContext.message.user});
         console.log('buildTooltip.user', user);
+        console.log("this.state", this.state);
 
         // Get Channel name
         let {name_normalized: channelName} = _.find(messageContext.channels, {'id': messageContext.message.channel});
@@ -111,9 +117,20 @@ export default class ShowMessages extends Component {
         console.log('buildTooltip: channelName, name, real_name, imageURL', channelName, name, real_name, imageURL);
 
         // Refer to https://developers.google.com/chart/interactive/docs/customizing_tooltip_content
-        let text = this.getMessageText(messageContext);
+        let text = this.getMessageText(messageContext.message);
 
-        return text;
+        let content = ReactDOMServer.renderToStaticMarkup(
+            <div>
+                <img alt="icon" src={imageURL} />
+                <div>Channel: {channelName}</div>
+                <div>ID: {name}</div>
+                <div>Name: {real_name}</div>
+                <div>Text: {text}</div>
+            </div>
+        );
+
+        console.log('content', content);
+        return content;
     }
 
     componentDidUpdate(prevProps, prevState) {
