@@ -22,13 +22,15 @@ class App extends Component {
     };
 
     componentDidMount() {
-        socket.on(IO_EVENT_CHAT_MESSAGE, (message) => {
-            this.setState({messageContext: {...this.state.messageContext, message}});
+        // Catches Slack API payload (users, and channels data)
+        socket.on(IO_EVENT_INITIAL_PAYLOAD, (payload) => {
+            console.log(`${IO_EVENT_INITIAL_PAYLOAD}`, payload);
+            this.setPayloadState(payload);
         });
 
-        socket.on(IO_EVENT_INITIAL_PAYLOAD, (payload) => {
-           console.log(`${IO_EVENT_INITIAL_PAYLOAD}`, payload);
-           this.setPayloadState(payload);
+        // Catches Slack message typed by a user
+        socket.on(IO_EVENT_CHAT_MESSAGE, (message) => {
+            this.setState({messageContext: {...this.state.messageContext, message}});
         });
     }
 
@@ -36,16 +38,14 @@ class App extends Component {
         const {channels, users} = _.pick(payload, ['channels', 'users']);
         console.log('channels & users', channels, users);
 
-        let usersState = this.extractUsersState(users);
-        let channelsState = this.extractChannelsState(channels);
-        console.log('channelsState & usersState', channelsState, usersState);
+        // let usersState = this.extractUsersState(users);
+        // let channelsState = this.extractChannelsState(channels);
+        // console.log('channelsState & usersState', channelsState, usersState);
 
         // https://stackoverflow.com/a/45067184/4035
         var mappedUsersState = _.map(users, _.partialRight(_.pick, ['id', 'name', 'real_name', 'team_id', 'profile.image_32']));
         var mappedChannelsState = _.map(channels, _.partialRight(_.pick, ['id', 'name_normalized']));
         console.log('mappedChannelsState & mappedUsersState', mappedChannelsState, mappedUsersState);
-
-        // this.setState({channels: mappedChannelsState, users: mappedUsersState});
 
         this.setState({
             messageContext: {
@@ -55,13 +55,13 @@ class App extends Component {
         });
     }
 
-    extractUsersState = (users) => {
-        return _.keyBy(users, 'id');
-    }
-
-    extractChannelsState = (channels) => {
-        return _.keyBy(channels, 'id');
-    }
+    // extractUsersState = (users) => {
+    //     return _.keyBy(users, 'id');
+    // }
+    //
+    // extractChannelsState = (channels) => {
+    //     return _.keyBy(channels, 'id');
+    // }
 
     render() {
         return (
