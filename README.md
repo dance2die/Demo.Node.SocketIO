@@ -8,5 +8,6 @@ Check out the work-in-progress video below.
 [![YouTube Link](http://img.youtube.com/vi/PR1WhzFJA6c/0.jpg)](https://www.youtube.com/watch?v=PR1WhzFJA6c&feature=youtu.be)
 
 *Update*: Added a tooltip~
+
 [![YouTube Link](http://img.youtube.com/vi/swAGoIBwuIw/0.jpg)](https://www.youtube.com/watch?v=swAGoIBwuIw&feature=youtu.be)
 
