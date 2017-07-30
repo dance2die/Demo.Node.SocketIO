@@ -110,6 +110,8 @@ export default class ShowMessages extends Component {
 
         if (prevProps.message.ts !== this.props.message.ts) {
             const {message} = this.props;
+            console.log('message', message);
+
             let text = this.getMessageText(message);
             const {score} = sentiment(text);
             let date = new Date();
