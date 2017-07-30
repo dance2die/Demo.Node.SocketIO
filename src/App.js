@@ -40,9 +40,8 @@ class App extends Component {
 
         // https://stackoverflow.com/a/45067184/4035
         var mappedUsersState = _.map(users, _.partialRight(_.pick, ['id', 'name', 'real_name', 'team_id', 'profile.image_32']));
-        console.log('mappedUsersState', mappedUsersState);
-
-        var mappedChannelsState = _.map(users, _.partialRight(_.pick, ['real_name', 'team_id', 'profile.image_32']));
+        var mappedChannelsState = _.map(channels, _.partialRight(_.pick, ['id', 'name_normalized']));
+        console.log('mappedChannelsState & mappedUsersState', mappedChannelsState, mappedUsersState);
 
         this.setState({channels: channelsState, users: usersState});
     }
