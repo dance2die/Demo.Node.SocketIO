@@ -10,6 +10,7 @@ let socket = io('http://localhost:3001');
 
 const IO_EVENT_INITIAL_PAYLOAD = 'initial payload';
 const IO_EVENT_CHAT_MESSAGE = 'chat message';
+const IO_EVENT_MEMBER_JOINED_CHANNEL = 'member_joined_channel';
 
 
 class App extends Component {
@@ -31,6 +32,19 @@ class App extends Component {
         // Catches Slack message typed by a user
         socket.on(IO_EVENT_CHAT_MESSAGE, (message) => {
             this.setState({messageContext: {...this.state.messageContext, message}});
+        });
+
+        socket.on(IO_EVENT_MEMBER_JOINED_CHANNEL, (memberJoinedContext) =>{
+            console.log('IO_EVENT_MEMBER_JOINED_CHANNEL', memberJoinedContext);
+            // this.setState({
+            //    messageContext: {
+            //        ...this.state.messageContext,
+            //        users: [
+            //            ...this.state.messageContext.users,
+            //
+            //        ]
+            //    }
+            // });
         });
     }
 

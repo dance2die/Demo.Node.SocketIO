@@ -11,6 +11,7 @@ const bot = slack.rtm.client();
 
 const IO_EVENT_INITIAL_PAYLOAD = 'initial payload';
 const IO_EVENT_CHAT_MESSAGE = 'chat message';
+const IO_EVENT_MEMBER_JOINED_CHANNEL = 'member_joined_channel';
 
 
 
@@ -41,6 +42,17 @@ bot.message((msg) => {
     // console.log('message.channels', msg);
     io.emit(IO_EVENT_CHAT_MESSAGE, msg);
 });
+
+bot.member_joined_channel((memberJoinedContext) => {
+    // let user = this.getUserFromId(memberJoinedContext.user);
+
+    io.emit(IO_EVENT_MEMBER_JOINED_CHANNEL, memberJoinedContext);
+});
+
+getUserFromId = (userId) => {
+
+}
+
 
 // app.get('/', function(req, res){
 //     res.sendFile(__dirname + '/index.html');
