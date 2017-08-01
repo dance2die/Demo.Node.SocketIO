@@ -11,6 +11,7 @@ let socket = io('http://localhost:3001');
 const IO_EVENT_INITIAL_PAYLOAD = 'initial payload';
 const IO_EVENT_CHAT_MESSAGE = 'chat message';
 const IO_EVENT_MEMBER_JOINED_CHANNEL = 'member_joined_channel';
+const IO_EVENT_MEMBER_LEFT_CHANNEL = 'member_left_channel';
 
 
 class App extends Component {
@@ -34,8 +35,8 @@ class App extends Component {
             this.setState({messageContext: {...this.state.messageContext, message}});
         });
 
-        socket.on(IO_EVENT_MEMBER_JOINED_CHANNEL, (memberJoinedContext) =>{
-            console.log('IO_EVENT_MEMBER_JOINED_CHANNEL', memberJoinedContext);
+        socket.on(IO_EVENT_MEMBER_JOINED_CHANNEL, (context) =>{
+            console.log('IO_EVENT_MEMBER_JOINED_CHANNEL', context);
             // this.setState({
             //    messageContext: {
             //        ...this.state.messageContext,
@@ -45,6 +46,10 @@ class App extends Component {
             //        ]
             //    }
             // });
+        });
+
+        socket.on(IO_EVENT_MEMBER_LEFT_CHANNEL, (context) => {
+            console.log('-----IO_EVENT_MEMBER_LEFT_CHANNEL', context);
         });
     }
 

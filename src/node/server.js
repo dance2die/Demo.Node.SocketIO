@@ -12,6 +12,7 @@ const bot = slack.rtm.client();
 const IO_EVENT_INITIAL_PAYLOAD = 'initial payload';
 const IO_EVENT_CHAT_MESSAGE = 'chat message';
 const IO_EVENT_MEMBER_JOINED_CHANNEL = 'member_joined_channel';
+const IO_EVENT_MEMBER_LEFT_CHANNEL = 'member_left_channel';
 
 
 
@@ -43,15 +44,18 @@ bot.message((msg) => {
     io.emit(IO_EVENT_CHAT_MESSAGE, msg);
 });
 
-bot.member_joined_channel((memberJoinedContext) => {
+// not working for some reason
+// bot.member_left_channel((context) => {
+//     // let user = this.getUserFromId(memberJoinedContext.user);
+//     console.log('member left!', context);
+//     io.emit(IO_EVENT_MEMBER_LEFT_CHANNEL, context);
+// });
+
+bot.member_joined_channel((context) => {
     // let user = this.getUserFromId(memberJoinedContext.user);
-
-    io.emit(IO_EVENT_MEMBER_JOINED_CHANNEL, memberJoinedContext);
+    // console.log('member joined!', context);
+    io.emit(IO_EVENT_MEMBER_JOINED_CHANNEL, context);
 });
-
-getUserFromId = (userId) => {
-
-}
 
 
 // app.get('/', function(req, res){
