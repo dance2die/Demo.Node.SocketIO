@@ -35,17 +35,14 @@ class App extends Component {
             this.setState({messageContext: {...this.state.messageContext, message}});
         });
 
-        socket.on(IO_EVENT_MEMBER_JOINED_CHANNEL, (context) =>{
-            console.log('IO_EVENT_MEMBER_JOINED_CHANNEL', context);
-            // this.setState({
-            //    messageContext: {
-            //        ...this.state.messageContext,
-            //        users: [
-            //            ...this.state.messageContext.users,
-            //
-            //        ]
-            //    }
-            // });
+        socket.on(IO_EVENT_MEMBER_JOINED_CHANNEL, (user) =>{
+            console.log('IO_EVENT_MEMBER_JOINED_CHANNEL', user);
+            this.setState({
+               messageContext: {
+                   ...this.state.messageContext,
+                   users: _.union(this.state.messageContext.users, user)
+               }
+            });
         });
 
         socket.on(IO_EVENT_MEMBER_LEFT_CHANNEL, (context) => {

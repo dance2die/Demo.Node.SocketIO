@@ -2,6 +2,7 @@
 const app = require('express')();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
+const _ = require('lodash');
 
 const slack = require('slack')
 const apiKeys = require('../../apiKeys');
@@ -37,7 +38,7 @@ bot.started((payload) => {
 });
 
 // start listening to the slack team associated to the token
-bot.listen({token:token});
+bot.listen({token});
 
 bot.message((msg) => {
     // console.log('message.channels', msg);
@@ -54,7 +55,16 @@ bot.message((msg) => {
 bot.member_joined_channel((context) => {
     // let user = this.getUserFromId(memberJoinedContext.user);
     // console.log('member joined!', context);
-    io.emit(IO_EVENT_MEMBER_JOINED_CHANNEL, context);
+
+    let userInfo = slack.users.info({token, user: context.user}, (err, data) => {
+        console.log('userInfo', data);
+
+        var mappedUsersState = _.pick(data.user, ['id', 'name', 'real_name', 'team_id', 'profile.image_32']);
+        console.log('userInfo: mappedUsersState', mappedUsersState);
+
+        io.emit(IO_EVENT_MEMBER_JOINED_CHANNEL, mappedUsersState);
+    });
+
 });
 
 
