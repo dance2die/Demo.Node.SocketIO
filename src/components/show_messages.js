@@ -55,19 +55,19 @@ export default class ShowMessages extends Component {
                         min: today,
                         max: maxTime,
                     },
-                    gridlines: {
-                        count: -1,
-                        units: {
-                            days: {format: ['MMM dd']},
-                            hours: {format: ['HH:mm', 'ha']},
-                        }
-                    },
-                    minorGridlines: {
-                        units: {
-                            hours: {format: ['hh:mm:ss a', 'ha']},
-                            minutes: {format: ['HH:mm a Z', ':mm']}
-                        }
-                    }
+                    // gridlines: {
+                    //     count: -1,
+                    //     units: {
+                    //         days: {format: ['MMM dd']},
+                    //         hours: {format: ['HH:mm', 'ha']},
+                    //     }
+                    // },
+                    // minorGridlines: {
+                    //     units: {
+                    //         hours: {format: ['hh:mm:ss a', 'ha']},
+                    //         minutes: {format: ['HH:mm a Z', ':mm']}
+                    //     }
+                    // }
                 },
                 vAxis: {
                     title: 'Sentiment',
@@ -142,6 +142,7 @@ export default class ShowMessages extends Component {
         if (this.props.messageContext.message && prevProps.messageContext.message !== this.props.messageContext.message) {
             const {message} = this.props.messageContext;
             console.log('message', message);
+            if (message.subtype) return;
 
             let text = this.getMessageText(message);
             const {score} = sentiment(text);
