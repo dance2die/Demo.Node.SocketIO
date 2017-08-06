@@ -5,7 +5,8 @@ import io from 'socket.io-client'
 import ShowMessages from './components/show_messages';
 import _ from 'lodash';
 
-let socket = io('http://localhost:3001');
+ let socket = io('http://localhost:3000');
+// let socket = io('wss://floating-journey-61262.herokuapp.com');
 // let socket = io('https://forrobnode.localtunnel.me');
 
 const IO_EVENT_INITIAL_PAYLOAD = 'initial payload';
@@ -32,6 +33,7 @@ class App extends Component {
 
         // Catches Slack message typed by a user
         socket.on(IO_EVENT_CHAT_MESSAGE, (message) => {
+            console.log("========message arrived!!!", message.messages);
             this.setState({messageContext: {...this.state.messageContext, message}});
         });
 
